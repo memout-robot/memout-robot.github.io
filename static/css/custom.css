@@ -295,17 +295,6 @@
 .pos-tbl th { text-align: left; }
 .pos-tbl td:first-child { font-weight: 600; color: var(--ink); white-space: nowrap; }
 
-/* ---------- Failure strip ---------- */
-.strip {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-}
-.strip figure { margin: 0; }
-.strip img { width: 100%; border-radius: 6px; display: block; }
-.strip figcaption { font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin-top: 0.2rem; }
-@media (max-width: 768px) { .strip { grid-template-columns: repeat(3, 1fr); } }
-
 details.more {
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
@@ -381,3 +370,8 @@ section.hero:first-of-type .hero-body { padding-bottom: 1rem; }
 .callout-foot { font-size: 0.92rem; color: var(--ink); margin-top: 0.8rem; font-weight: 500; }
 @media (max-width: 768px) { .mem-compare { grid-template-columns: 1fr; } }
 .callout-title svg { color: var(--accent); margin-right: 0.35rem; }
+
+/* Design comparison table */
+.design-tbl td:nth-child(3) { background: var(--accent-soft); }
+.design-tbl td { font-size: 0.92rem; line-height: 1.5; }
+.tldr + details.more { margin-top: 0.75rem; }
