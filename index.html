@@ -76,8 +76,8 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">When Memory Lives Outside the Policy</h1>
-            <p class="publication-subtitle">Rethinking Robot Memory Benchmarks with Agentic Harnesses</p>
+            <h1 class="title is-1 publication-title">When Memory Lives Outside the Policy: Rethinking</h1>
+            <p class="publication-subtitle">Robot Memory Benchmarks with Agentic Harnesses</p>
 
             <!-- TODO: add personal homepage links to each author -->
             <div class="is-size-5 publication-authors">
@@ -226,7 +226,7 @@
   <!-- ================= Finding 1 ================= -->
   <section class="section" id="robomme">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">1. A Simple Agent Nearly Saturates RoboMME</h2>
+      <h2 class="title is-3 has-text-centered">Finding 1: A Simple Agent Nearly Saturates RoboMME</h2>
       <div class="bars" role="img" aria-label="Average RoboMME success rate by method">
         <div class="bar-group-label">Learned execution (800 test episodes)</div>
         <div class="bar-row">
@@ -289,65 +289,9 @@
   </section>
 
   <!-- ================= Finding 2 ================= -->
-  <section class="section hero is-light" id="memory-matters">
+  <section class="section hero is-light" id="rmbench">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">2. The Score Depends on What the Harness Remembers</h2>
-      <div class="example-grid">
-        <figure>
-          <img class="figure-img" src="static/images/bu_step0.png" alt="ButtonUnmask decision 0: three cubes visible">
-          <figcaption>Decision 0: the cubes are visible.</figcaption>
-        </figure>
-        <figure>
-          <img class="figure-img" src="static/images/bu_step1.png" alt="ButtonUnmask decision 1: identical containers cover the cubes">
-          <figcaption>Decision 1: identical containers cover them (× log only, ○ + visual history).</figcaption>
-        </figure>
-      </div>
-      <p class="caption has-text-centered"><code>ButtonUnmask</code>: “first press the button, then pick up the container hiding the red cube”.
-        With only the action log, the agent sees the covered scene and picks the center container. With visual history, earlier frames still show
-        the red cube on the left, and it picks correctly.</p>
-      <div class="prose" style="margin-top:1rem">
-        <p>
-          With the same model, code and task notes, adding a visual history of the agent's own execution changes the outcome of 28 of the 160
-          episode pairs for GPT-6 Astra, 25 of them in its favor (exact McNemar test, p = 2.7×10<sup>−5</sup>). For Opus, 23 of 27 changes are gains
-          (p = 3.1×10<sup>−4</sup>). The benchmark score thus depends substantially on which past observations the harness provides.
-        </p>
-        <p>
-          The gains concentrate in three tasks, <code>ButtonUnmask</code>, <code>ButtonUnmaskSwap</code> and <code>PickHighlight</code> (23 of 25 gains for
-          GPT-6 Astra), where the decisive cue is visible only briefly, for example during the button press, and is gone when the agent needs it.
-          In contrast, the five <code>Video*</code> tasks do not change for GPT-6 Astra, because the demonstration is re-sent at every decision and
-          never has to be remembered.
-        </p>
-      </div>
-
-      <details class="more">
-        <summary>Per-task results</summary>
-      <div class="table-wrap">
-        <table class="tbl">
-          <thead>
-            <tr><th></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th><th></th><th class="sep"></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th><th></th></tr>
-            <tr><th>Task</th><th>N</th><th>H</th><th>N</th><th>H</th><th>3T</th><th class="sep">Task</th><th>N</th><th>H</th><th>N</th><th>H</th><th>3T</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>VideoUnmask<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td>92</td><td class="sep">SwingXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td><td>82</td></tr>
-            <tr><td>VideoUnmaskSwap<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>90</td><td>100</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmask</td><td style="background:var(--accent-soft)">30</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">50</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">100</td></tr>
-            <tr><td>VideoRepick<sup>d</sup></td><td>100</td><td>100</td><td>80</td><td>80</td><td>86</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmaskSwap</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">84</td></tr>
-            <tr><td>VideoPlaceButton<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>100</td><td class="sep" style="background:var(--accent-soft)">PickHighlight</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">40</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">84</td></tr>
-            <tr><td>VideoPlaceOrder<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td>98</td><td class="sep">InsertPeg<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>18</td></tr>
-            <tr><td>BinFill</td><td>80</td><td>80</td><td>90</td><td>90</td><td>82</td><td class="sep">RouteStick<sup>d</sup></td><td>100</td><td>80</td><td>60</td><td>50</td><td>58</td></tr>
-            <tr><td>PickXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td><td>96</td><td class="sep">PatternLock<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>90</td><td>88</td></tr>
-            <tr><td>MoveCube<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>80</td><td class="sep">StopCube</td><td>50</td><td>60</td><td>20</td><td>50</td><td>18</td></tr>
-          </tbody>
-        </table>
-      </div>
-        <p class="caption">N / H: without / with visual history, 10 episodes per task. <sup>d</sup>: demonstration provided. 3T: GPT-6 Astra + π<sub>0.5</sub> three-tier system.</p>
-      </details>
-    </div>
-  </section>
-
-  <!-- ================= Finding 3 ================= -->
-  <section class="section" id="rmbench">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">3. On RMBench, an Action Log Is Enough</h2>
+      <h2 class="title is-3 has-text-centered">Finding 2: An Action Log Is Enough on RMBench</h2>
       <div class="prose">
         <p>
           On RoboMME, both conditions keep the action log, so they test which memory helps rather than whether memory is needed at all. On RMBench,
@@ -408,6 +352,62 @@
         </table>
       </div>
 
+      </details>
+    </div>
+  </section>
+
+  <!-- ================= Finding 3 ================= -->
+  <section class="section" id="memory-matters">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Finding 3: Harness Memory Changes the Score</h2>
+      <div class="example-grid">
+        <figure>
+          <img class="figure-img" src="static/images/bu_step0.png" alt="ButtonUnmask decision 0: three cubes visible">
+          <figcaption>Decision 0: the cubes are visible.</figcaption>
+        </figure>
+        <figure>
+          <img class="figure-img" src="static/images/bu_step1.png" alt="ButtonUnmask decision 1: identical containers cover the cubes">
+          <figcaption>Decision 1: identical containers cover them (× log only, ○ + visual history).</figcaption>
+        </figure>
+      </div>
+      <p class="caption has-text-centered"><code>ButtonUnmask</code>: “first press the button, then pick up the container hiding the red cube”.
+        With only the action log, the agent sees the covered scene and picks the center container. With visual history, earlier frames still show
+        the red cube on the left, and it picks correctly.</p>
+      <div class="prose" style="margin-top:1rem">
+        <p>
+          With the same model, code and task notes, adding a visual history of the agent's own execution changes the outcome of 28 of the 160
+          episode pairs for GPT-6 Astra, 25 of them in its favor (exact McNemar test, p = 2.7×10<sup>−5</sup>). For Opus, 23 of 27 changes are gains
+          (p = 3.1×10<sup>−4</sup>). The benchmark score thus depends substantially on which past observations the harness provides.
+        </p>
+        <p>
+          The gains concentrate in three tasks, <code>ButtonUnmask</code>, <code>ButtonUnmaskSwap</code> and <code>PickHighlight</code> (23 of 25 gains for
+          GPT-6 Astra), where the decisive cue is visible only briefly, for example during the button press, and is gone when the agent needs it.
+          In contrast, the five <code>Video*</code> tasks do not change for GPT-6 Astra, because the demonstration is re-sent at every decision and
+          never has to be remembered.
+        </p>
+      </div>
+
+      <details class="more">
+        <summary>Per-task results</summary>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr><th></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th><th></th><th class="sep"></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th><th></th></tr>
+            <tr><th>Task</th><th>N</th><th>H</th><th>N</th><th>H</th><th>3T</th><th class="sep">Task</th><th>N</th><th>H</th><th>N</th><th>H</th><th>3T</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>VideoUnmask<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td>92</td><td class="sep">SwingXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td><td>82</td></tr>
+            <tr><td>VideoUnmaskSwap<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>90</td><td>100</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmask</td><td style="background:var(--accent-soft)">30</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">50</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">100</td></tr>
+            <tr><td>VideoRepick<sup>d</sup></td><td>100</td><td>100</td><td>80</td><td>80</td><td>86</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmaskSwap</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">84</td></tr>
+            <tr><td>VideoPlaceButton<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>100</td><td class="sep" style="background:var(--accent-soft)">PickHighlight</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">40</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">84</td></tr>
+            <tr><td>VideoPlaceOrder<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td>98</td><td class="sep">InsertPeg<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>18</td></tr>
+            <tr><td>BinFill</td><td>80</td><td>80</td><td>90</td><td>90</td><td>82</td><td class="sep">RouteStick<sup>d</sup></td><td>100</td><td>80</td><td>60</td><td>50</td><td>58</td></tr>
+            <tr><td>PickXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td><td>96</td><td class="sep">PatternLock<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>90</td><td>88</td></tr>
+            <tr><td>MoveCube<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>80</td><td class="sep">StopCube</td><td>50</td><td>60</td><td>20</td><td>50</td><td>18</td></tr>
+          </tbody>
+        </table>
+      </div>
+        <p class="caption">N / H: without / with visual history, 10 episodes per task. <sup>d</sup>: demonstration provided. 3T: GPT-6 Astra + π<sub>0.5</sub> three-tier system.</p>
       </details>
     </div>
   </section>
