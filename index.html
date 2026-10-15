@@ -76,8 +76,7 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">When Memory Lives Outside the Policy: Rethinking</h1>
-            <p class="publication-subtitle">Robot Memory Benchmarks with Agentic Harnesses</p>
+            <h1 class="title is-1 publication-title"><span class="t-line">When Memory Lives Outside the Policy: Rethinking</span> <span class="t-line">Robot Memory Benchmarks with Agentic Harnesses</span></h1>
 
             <!-- TODO: add personal homepage links to each author -->
             <div class="is-size-5 publication-authors">
@@ -135,8 +134,8 @@
             <div class="lbl">points from changing <em>only</em> what the harness remembers</div>
           </div>
           <div class="stat">
-            <div class="num">0 → 91</div>
-            <div class="lbl">RMBench successes / 100: no history vs. a plain action log</div>
+            <div class="num">91 ≈ 93</div>
+            <div class="lbl">RMBench successes / 100: action log vs. + visual memory (p = 0.51)</div>
           </div>
           <div class="stat">
             <div class="num">&lt; 4</div>
@@ -173,8 +172,7 @@
               act. Adding this history costs only about $0.04 per episode. These results show that a simple skill-based agent can nearly
               saturate RoboMME, but its score depends strongly on what information the harness preserves. Moreover, RoboMME episodes
               require fewer than four high-level decisions on average, leaving limited room to test memory over long horizons. RMBench
-              shows a different pattern. Removing all history reduces success from 91% to 0%, confirming that memory is necessary.
-              However, a text action log performs about as well as the same log plus decision-time visual history (91% vs. 93%,
+              shows a different pattern: a text action log performs about as well as the same log plus decision-time visual history (91% vs. 93%,
               p = 0.51). Overall, RoboMME is sensitive to visual history, whereas RMBench mainly tests whether the agent remembers its
               own actions. Both results point to the need for longer-horizon robot memory benchmarks.
             </p>
@@ -318,15 +316,11 @@
       <p class="caption has-text-centered">Successes out of 100. API cost: $0.17 (action log) vs. $0.23 (visual memory) per episode.</p>
       <div class="prose" style="margin-top:1rem">
         <p>
-          <b>RMBench requires memory.</b> Without any history, the planner fails every episode: on <code>press_button</code> and
-          <code>blocks_ranking_try</code> it cannot know how many presses or which arrangements it has already tried, and elsewhere it mostly
-          points at nothing or runs out of calls.
-        </p>
-        <p>
-          <b>But an action log is enough.</b> The log alone reaches 91/100, and adding visual memory gives 93/100, a difference that is not
-          significant (6 vs. 3 discordant episodes, p = 0.51). This contrasts with RoboMME, where visual memory adds 13.8 points because the cue
+          The action log alone reaches 91/100, and adding visual memory gives 93/100, a difference that is not significant
+          (6 vs. 3 discordant episodes, p = 0.51). This contrasts with RoboMME, where visual memory adds 13.8 points because the cue
           appears only briefly during the robot's own action. Once manipulation is handled by a competent harness, the memory RMBench tests largely
-          reduces to what the agent has done so far.
+          reduces to what the agent has done so far. As a sanity check, removing all history makes the planner fail every episode, so the tasks do
+          depend on remembering past actions.
         </p>
       </div>
 
