@@ -165,7 +165,9 @@
               multimodal models can now control robots by choosing among high-level skills. We ask whether such benchmarks remain
               challenging in the agent era. We wrap GPT-6 Astra and Claude Opus 5.5 in a simple, training-free harness that selects
               RoboMME's high-level skills through stateless API calls, so that the model receives information about earlier steps only
-              through the prompt that the harness builds. On 160 matched test episodes across all 16 tasks, GPT-6 Astra succeeds in
+              through the prompt that the harness builds. To remove the influence of manipulation dynamics, the model never controls the
+              arm directly: on RoboMME it only selects among the benchmark's skills, which the oracle planner executes, and on RMBench it
+              names a skill and a target pixel, which a fixed, training-free harness executes. On 160 matched test episodes across all 16 tasks, GPT-6 Astra succeeds in
               81.3% of episodes with a text log of its previous actions and their outcomes, and in 95.0% once it also sees a 24-frame
               sheet of its own past execution (Claude Opus 5.5: 76.9% and 88.8%), compared with 90.5% for humans. The benefit of visual
               history comes mainly from three tasks in which an important visual cue disappears before the agent must
