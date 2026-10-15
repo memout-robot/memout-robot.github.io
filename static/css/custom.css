@@ -418,10 +418,11 @@ img, video, svg { max-width: 100%; height: auto; }
   text-wrap: balance;
   margin-bottom: 1.25rem !important;
 }
-@media (min-width: 1000px) {
+@media (min-width: 720px) {
   .publication-title.is-1 {
-    font-size: 2.1rem;
-    width: 960px;
+    font-size: min(2.1rem, 3.4vw) !important;
+    width: 96vw;
+    max-width: 1000px;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
