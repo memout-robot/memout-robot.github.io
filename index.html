@@ -168,14 +168,15 @@
               RoboMME's high-level skills through stateless API calls, so that the model receives information about earlier steps only
               through the prompt that the harness builds. On 160 matched test episodes across all 16 tasks, GPT-6 Astra succeeds in
               81.3% of episodes with a text log of its previous actions and their outcomes, and in 95.0% once it also sees a 24-frame
-              sheet of its own past execution (Claude Opus 5.5: 76.9% and 88.8%), compared with 90.5% for humans. The gain is
-              concentrated in three tasks whose key visual cue disappears before it is needed, and costs only about $0.04 more per
-              episode. With high-level skills and privileged execution, a simple agent thus nearly saturates the benchmark, and its
-              score depends substantially on which past observations the harness provides; because an episode requires fewer than four
-              high-level decisions on average, we argue that robot memory benchmarks must move to longer-horizon tasks. On RMBench,
-              removing all history drops success from 91% to 0%, yet a text action log alone matches text plus visual memory built
-              from the frames seen at each decision (91% vs. 93%, p = 0.51), unlike RoboMME where visual memory adds 13.8 points
-              (130 vs. 152 of 160, p = 2.7×10<sup>−5</sup>); RMBench's memory demand is largely met by an action log.
+              sheet of its own past execution (Claude Opus 5.5: 76.9% and 88.8%), compared with 90.5% for humans. The benefit of visual
+              history comes mainly from three tasks in which an important visual cue disappears before the agent must
+              act. Adding this history costs only about $0.04 per episode. These results show that a simple skill-based agent can nearly
+              saturate RoboMME, but its score depends strongly on what information the harness preserves. Moreover, RoboMME episodes
+              require fewer than four high-level decisions on average, leaving limited room to test memory over long horizons. RMBench
+              shows a different pattern. Removing all history reduces success from 91% to 0%, confirming that memory is necessary.
+              However, a text action log performs about as well as the same log plus decision-time visual history (91% vs. 93%,
+              p = 0.51). Overall, RoboMME is sensitive to visual history, whereas RMBench mainly tests whether the agent remembers its
+              own actions. Both results point to the need for longer-horizon robot memory benchmarks.
             </p>
       </div>
     </div>
