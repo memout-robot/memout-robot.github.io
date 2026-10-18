@@ -420,7 +420,7 @@ img, video, svg { max-width: 100%; height: auto; }
 }
 @media (min-width: 720px) {
   .publication-title.is-1 {
-    font-size: min(2.75rem, 5.2vw) !important;
+    font-size: min(2.75rem, 4.5vw) !important;
     width: 96vw;
     max-width: 1000px;
     position: relative;
