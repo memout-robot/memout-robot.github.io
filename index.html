@@ -6,7 +6,7 @@
 
   <!-- Primary Meta Tags -->
   <meta name="title" content="How Hard Are Current Robot Memory Benchmarks for Agentic Harnesses?">
-  <meta name="description" content="A simple, training-free agentic harness nearly saturates RoboMME, its score depends on what the harness remembers, and RMBench's memory demand is largely met by an action log. Robot memory benchmarks need longer horizons.">
+  <meta name="description" content="We use a stateless agentic harness to test what information agents need to solve RoboMME and RMBench: past camera frames add 14–16 points on RoboMME, while an agent-written event log reaches 91/100 on RMBench.">
   <meta name="keywords" content="robot memory, benchmark, agentic robots, RoboMME, RMBench, multimodal LLM, GPT-6 Astra, Claude Opus 5.5, manipulation">
   <meta name="author" content="Feiyang Wu, Weirui Ye, Haonan Chen, Haoyu Chen, Jiayu Zhou, Yandong Ji, Yuejiang Liu, Yilun Du">
   <meta name="robots" content="index, follow">
@@ -15,7 +15,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="How Hard Are Current Robot Memory Benchmarks for Agentic Harnesses?">
-  <meta property="og:description" content="A simple, training-free agent nearly saturates RoboMME (95.6% vs. 90.5% human); what the harness remembers moves the score by 14–16 points. Robot memory benchmarks need longer horizons.">
+  <meta property="og:description" content="What information do agents need to solve robot memory benchmarks? Past frames add 14–16 points on RoboMME (GPT-6 Astra: 95.6%); on RMBench an agent-written event log reaches 91/100.">
   <!-- TODO: set og:url / og:image once the page is deployed -->
   <meta property="og:image" content="static/images/harness.png">
 
@@ -51,7 +51,7 @@
 
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/index.css?v=20261015">
-  <link rel="stylesheet" href="static/css/custom.css?v=20261020">
+  <link rel="stylesheet" href="static/css/custom.css?v=20261021">
   <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
@@ -133,28 +133,29 @@
         <div class="stat-row">
           <div class="stat">
             <div class="num accent">95.6%</div>
-            <div class="lbl">RoboMME success of a simple, training-free agent (humans: 90.5%)</div>
+            <div class="lbl">RoboMME success of GPT-6 Astra with visual history (160 test episodes)</div>
           </div>
           <div class="stat">
-            <div class="num accent">+14.4</div>
-            <div class="lbl">points on RoboMME from adding visual history to the action log</div>
+            <div class="num accent">+14–16</div>
+            <div class="lbl">points on RoboMME from adding past frames to the text action log</div>
           </div>
           <div class="stat">
-            <div class="num">91 ≈ 93</div>
-            <div class="lbl">RMBench successes / 100: action log vs. action log + visual history (p = 0.51)</div>
+            <div class="num">91 / 93</div>
+            <div class="lbl">RMBench successes / 100: event log vs. + decision-time images (p = 0.51)</div>
           </div>
           <div class="stat">
-            <div class="num">&lt; 4</div>
-            <div class="lbl">high-level decisions per RoboMME episode</div>
+            <div class="num">3.7–3.9</div>
+            <div class="lbl">high-level decisions per RoboMME episode on average</div>
           </div>
         </div>
 
         <div class="tldr">
-          <strong>TL;DR.</strong> Are robot memory benchmarks still hard once memory can live outside the policy? We wrap a frontier
-          multimodal LLM in a deliberately simple harness that <strong>bypasses the model's native memory</strong> (every decision is a
-          separate, stateless API call) and <strong>lets it call only high-level skills</strong>, executed by code that a coding agent wrote. It nearly saturates RoboMME, its score
-          depends on what the harness shows it, and RMBench is solved by an action log. Robot memory benchmarks need
-          <strong>much longer horizons</strong>.
+          <strong>TL;DR.</strong> Robot memory benchmarks score end-to-end policies, so a failure can come from memory, planning or
+          control. We wrap a frontier multimodal LLM in a harness that <strong>bypasses the model's native memory</strong> (every decision is
+          a separate, stateless API call) and <strong>lets it call only high-level skills</strong>, executed by a controller that an LLM coding
+          agent built. Changing only what the harness supplies, we test <strong>what information agents need</strong>: on RoboMME, past camera
+          frames add 14–16 points over a text action log; on RMBench, an agent-written event log already reaches 91/100. Episodes are short
+          enough that the full history fits in every prompt, so <strong>longer tasks</strong> could test what agents choose to retain.
         </div>
 
       </div>
@@ -167,17 +168,18 @@
       <h2 class="title is-3 has-text-centered">Abstract</h2>
       <div class="content has-text-justified">
             <p>
-              Robot memory benchmarks were built to evaluate end-to-end policies. We ask whether they remain challenging when a
-              general-purpose multimodal model controls the robot through high-level skills. We wrap GPT-6 Astra and Claude Opus 5.5 in a
-              simple, training-free harness with two deliberate restrictions: every decision is a separate, stateless API call, so the model
-              sees the past only through what the harness puts in the prompt; and the model only selects skills, so manipulation dynamics do
-              not confound the results. The skills are executed by code that a coding agent wrote and froze before evaluation. On RoboMME,
-              GPT-6 Astra succeeds in 81.3% of episodes with a text log of its past actions, and in 95.6% when it also sees images of its own
-              past execution (Claude Opus 5.5: 72.5% and 88.8%), compared with 90.5% for humans; RoboMME's oracle planner gives nearly the
-              same results.
-              The gain comes mainly from three tasks whose key visual cue disappears before it is needed. On RMBench, the action log alone
-              matches the log plus visual history (91% vs. 93%). Both benchmarks need only a few decisions per episode, so we argue that
-              robot memory benchmarks need much longer horizons.
+              Robot memory benchmarks usually evaluate end-to-end policies, whose failures can come from memory, planning, or control. We
+              use an agentic harness to test what information agents need to solve RoboMME and RMBench. We wrap GPT-6 Astra and Claude
+              Opus 5.5 in a harness that makes each decision through a stateless API call; the model receives prior information only in the
+              prompt, and a controller developed separately by an LLM coding agent executes the selected skill. On 160 RoboMME test
+              episodes, GPT-6 Astra solves 81.3% with a text log of its actions and 95.6% when it also receives a contact sheet of past
+              camera frames. Claude Opus 5.5 improves from 72.5% to 88.8%. Three tasks with disappearing visual cues account for most of
+              the gains. RoboMME's oracle planner gives similar aggregate scores. With visual history, success remains at 91.3% and 87.5%,
+              respectively, after removing task-specific strategy and memory advice. On RMBench, an event log containing agent-written
+              observations reaches 91 successes out of 100, compared with 93 after adding decision-time images. Episodes average 3.7–3.9
+              high-level decisions on RoboMME and about nine on RMBench. In the memory-equipped conditions, each request includes the full
+              text log and, when enabled, a contact sheet of past observations. Longer tasks could test how agents choose what to retain
+              when the full history no longer fits in the prompt.
             </p>
       </div>
     </div>
@@ -199,12 +201,12 @@
           <b>We let the model call only high-level skills.</b> When the goal is to test memory, the agent should not be bottlenecked by the dynamics
           of manipulation. On RoboMME, it chooses among the benchmark's own high-level skills, which are executed by <em>agent-built skills</em>:
           code that a coding agent wrote, tested in simulation and froze before evaluation. RMBench offers no skills, so the model names a skill
-          and a pixel, and agent-built skills ground the pixel and plan the motion. Failures then point to what the agent remembered, not to how
-          well the arm moved.
+          and a pixel, and agent-built skills ground the pixel and plan the motion. Within each comparison the planner and the executor stay
+          fixed, so a change in success comes from the memory supplied, not from how the arm moves.
         </p>
         <p>
-          The harness is otherwise kept minimal: no training, no retrieval, and no task-specific strategy beyond short notes on benchmark
-          conventions. Its scores are a conservative estimate of what an agent can achieve, not the result of tuning.
+          The harness is otherwise kept simple: no training and no retrieval, only short notes about benchmark conventions, a few generic
+          strategies and, on RMBench, what information to record.
         </p>
       </div>
 
@@ -212,10 +214,12 @@
         <div class="defbox-title">What the harness remembers</div>
         <p>Everything the model knows about the past is what the harness puts in the prompt. We compare three settings:</p>
         <ul>
-          <li><b>No memory</b>: only the current image and the task.</li>
-          <li><b>Action log</b> (text): one line per past decision, giving the skill chosen, its target pixel and the outcome,
-            e.g. <code>#0 press the button → done</code>.</li>
-          <li><b>Action log + visual history</b> (images): the same log, plus a grid of frames from the agent's own past execution
+          <li><b>No memory</b> (RMBench only): the task, a task note and the current image; no past actions or observations.</li>
+          <li><b>Text log</b>: one entry per past decision. On RoboMME, a structured <b>action log</b> with the skill, its target pixel, the
+            result and the number of motion frames, e.g. <code>#4 a [58,154] ongoing 86</code>. On RMBench, an <b>event log</b> that also
+            stores a one-line record written by the agent itself, which can retain visual facts, e.g. <code>7 place [130,173] succeeded</code>
+            <em>“red uncovered first; next uncover green …”</em></li>
+          <li><b>Text log + visual history</b> (images): the same log, plus a grid of past camera frames
             (RoboMME: 24 frames sampled over the whole episode; RMBench: one frame per decision).</li>
         </ul>
       </div>
@@ -224,15 +228,15 @@
         <table class="tbl pos-tbl design-tbl">
           <thead><tr><th></th><th>Full-context agent (e.g., <a href="https://embodied-astra.github.io/" target="_blank">Embodied-Astra</a>)</th><th>Ours</th></tr></thead>
           <tbody>
-            <tr><td>Memory</td><td>Native: one chained conversation per episode</td><td><b>No native memory.</b> Each decision is a separate, stateless API call; the past enters only through what the harness puts in the prompt (no memory / action log / action log + visual history)</td></tr>
+            <tr><td>Memory</td><td>Native: one chained conversation per episode</td><td><b>No native memory.</b> Each decision is a separate, stateless API call; the past enters only through what the harness puts in the prompt (no memory / text log / text log + visual history)</td></tr>
             <tr><td>Control</td><td>Model outputs end-effector waypoints</td><td><b>Skills only.</b> The model picks a skill (+ pixel); agent-built skills, written by a coding agent and frozen before evaluation, execute it</td></tr>
-            <tr><td>Question</td><td>How well can a frontier model do?</td><td>What does the benchmark actually measure?</td></tr>
+            <tr><td>Question</td><td>How well can a frontier model do?</td><td>What information does an agent need to remember?</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="caption">Memory becomes a variable we can ablate, and failures point to memory rather than manipulation. The protocols differ, so we do not claim to outperform full-context agents.</p>
+      <p class="caption">Memory becomes a variable we can ablate while the planner and executor stay fixed. The protocols differ, so we do not claim to outperform full-context agents.</p>
 
-      <img class="figure-img" style="margin-top:1.5rem" src="static/images/harness.png?v=20261020" alt="Diagram of one decision of the memory harness on RoboMME">
+      <img class="figure-img" style="margin-top:1.5rem" src="static/images/harness.png?v=20261021" alt="Diagram of one decision of the memory harness on RoboMME">
       <p class="caption">One decision on RoboMME. The harness builds a prompt from the goal, skills, action log and current image (plus, in the
         action log + visual history setting, a 24-frame grid of past execution); the model answers in one stateless call; agent-built skills execute it.</p>
     </div>
@@ -241,7 +245,7 @@
   <!-- ================= Finding 1 ================= -->
   <section class="section" id="robomme">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Finding 1: RoboMME Is Nearly Solved (95.6% vs. 90.5% for Humans)</h2>
+      <h2 class="title is-3 has-text-centered">Finding 1: With Visual History, GPT-6 Astra Solves 95.6% of RoboMME</h2>
       <div class="bars" role="img" aria-label="Average RoboMME success rate by method">
         <div class="bar-group-label">Learned execution (800 test episodes)</div>
         <div class="bar-row">
@@ -283,13 +287,20 @@
         <span><i class="sw-vis"></i>action log + visual history</span>
         <span><i class="sw-human"></i>human (dashed line)</span>
       </div>
-      <p class="caption has-text-centered">Average success (%). Ours: 160 of the 800 test episodes, so comparisons are indicative.</p>
+      <p class="caption has-text-centered">Average success (%). Baselines use 800 test episodes, ours 160; differences in episodes and execution protocol limit direct comparisons.</p>
       <div class="prose" style="margin-top:1.25rem">
         <p>
-          GPT-6 Astra reaches 95.6% with the action log plus visual history (Claude Opus 5.5: 88.8%) and solves every episode on 15 of the
-          16 tasks. That is above the 90.5% human score and far above RoboMME's best foundation-model planner (Gemini-2.5-Pro, 47.9%) and
-          best memory VLA (44.5%). Executing the same skills with RoboMME's oracle planner instead gives nearly the same results (95.0% and
-          88.8%). All of GPT-6 Astra's remaining failures are in <code>StopCube</code> (30%), which requires pressing a button at the right moment; with the oracle planner, which stops at the exact event time, it reaches 60%.
+          With the action log alone, GPT-6 Astra solves 81.3% of episodes and Claude Opus 5.5 72.5%; with visual history, 95.6% and 88.8%.
+          GPT-6 Astra then solves every episode on 15 of the 16 tasks. The remaining failures lie mostly in <code>StopCube</code>, which requires
+          pressing a button at the right moment, and, for Opus, in <code>RouteStick</code>. RoboMME reports 47.9% for Gemini-2.5-Pro with its
+          oracle planner and 44.5% for the best end-to-end memory VLA. Our result is also numerically above RoboMME's reported human score
+          (90.5%), but the evaluations differ in episode count and execution protocol and are not directly comparable.
+        </p>
+        <p>
+          <b>Robustness.</b> Executing the same skills with RoboMME's oracle planner gives similar aggregate results (95.0% and 88.8% with
+          visual history). Removing task-specific strategy and memory advice from the prompt, while keeping interface conventions and all
+          memory inputs, leaves success with visual history at 91.3% for GPT-6 Astra and 87.5% for Opus; the largest drop is on
+          <code>VideoRepick</code> (10/10 to 4/10).
         </p>
       </div>
 
@@ -323,11 +334,12 @@
   <!-- ================= Finding 2 ================= -->
   <section class="section hero is-light" id="rmbench">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Finding 2: On RMBench, the Action Log Alone Is Enough</h2>
+      <h2 class="title is-3 has-text-centered">Finding 2: On RMBench, an Agent-Written Event Log Reaches 91/100</h2>
       <div class="prose">
         <p>
-          RMBench has no skill library, so the model names a skill and a target pixel, and agent-built skills execute it. We compare the
-          three memory settings with GPT-6 Astra on 10 tasks × 10 seeds.
+          RMBench has no skill library, so the model names a skill and a target pixel, and agent-built skills execute it, without reading object
+          state from the simulator. We compare the three memory settings with GPT-6 Astra on 10 tasks × 10 seeds. Here the text log is an
+          <b>event log</b>: alongside each action and its outcome, the agent writes a one-line record of what it wants to remember.
         </p>
       </div>
       <div class="bars" role="img" aria-label="RMBench successes out of 100 under three memory conditions">
@@ -336,19 +348,20 @@
           <div class="bar-track"><div class="bar-fill zero" style="width:0%"><span>0</span></div></div>
         </div>
         <div class="bar-row">
-          <div class="bar-name">Action log<small>text</small></div>
+          <div class="bar-name">Event log<small>text, agent-written records</small></div>
           <div class="bar-track"><div class="bar-fill log" style="width:91%"><span>91</span></div></div>
         </div>
         <div class="bar-row">
-          <div class="bar-name">Action log + visual history<small>text + one frame per decision</small></div>
+          <div class="bar-name">Event log + images<small>+ one frame per decision</small></div>
           <div class="bar-track"><div class="bar-fill vis" style="width:93%"><span>93</span></div></div>
         </div>
       </div>
-      <p class="caption has-text-centered">Successes out of 100. API cost: $0.17 (action log) vs. $0.23 (action log + visual history) per episode.</p>
+      <p class="caption has-text-centered">Successes out of 100. API cost: $0.17 (event log) vs. $0.23 (event log + images) per episode.</p>
       <div class="prose" style="margin-top:1rem">
         <p>
-          The action log alone reaches 91/100; adding visual history gives 93/100, a difference that is not significant (p = 0.51). Unlike on
-          RoboMME, what RMBench asks the agent to remember is mostly what it has already done.
+          The event log reaches 91/100, and adding decision-time images gives 93/100, a difference that is not significant (p = 0.51). Because
+          the event log can already retain visual facts, this measures the additional benefit of images beyond the log. Differences in log
+          contents and frame sampling limit direct comparisons with RoboMME.
         </p>
       </div>
 
@@ -358,7 +371,7 @@
         <p class="caption">RMBench has no skill library: the model outputs a skill and a pixel, and agent-built skills ground it with SAM2 + depth and plan with CuRobo, without simulator state.</p>
       <div class="table-wrap">
         <table class="tbl">
-          <thead><tr><th>Task</th><th>No memory</th><th>Action log</th><th>Action log + visual history</th></tr></thead>
+          <thead><tr><th>Task</th><th>No memory</th><th>Event log</th><th>Event log + images</th></tr></thead>
           <tbody>
             <tr><td><code>battery_try</code></td><td>0/10</td><td>7/10</td><td>7/10</td></tr>
             <tr><td><code>blocks_ranking_try</code></td><td>0/10</td><td>10/10</td><td>10/10</td></tr>
@@ -385,21 +398,33 @@
       <h2 class="title is-3 has-text-centered">Finding 3: On RoboMME, Adding Visual History Is Worth 14–16 Points</h2>
       <div class="example-grid">
         <figure>
-          <img class="figure-img" src="static/images/bu_step0.png" alt="ButtonUnmask decision 0: three cubes visible">
-          <figcaption>Decision 0: the cubes are visible.</figcaption>
+          <div class="ex-head">With visual history: decision 1</div>
+          <img class="figure-img" src="static/images/bu_history_cue.png" alt="ButtonUnmask: an earlier frame in the visual history shows the red cube on the left">
+          <figcaption>(a) Earlier cue retained in history</figcaption>
+          <div class="ex-body">
+            <b>Selected: left container <span class="ok">(success)</span></b><br>
+            <code>choice=b, point=[97,87]</code><br>
+            <q>The button was pressed, and the reveal showed the red cube beneath the leftmost container.</q>
+          </div>
         </figure>
         <figure>
-          <img class="figure-img" src="static/images/bu_step1.png" alt="ButtonUnmask decision 1: identical containers cover the cubes">
-          <figcaption>Decision 1: identical containers cover them (× log only, ○ + visual history).</figcaption>
+          <div class="ex-head">Action log only: decision 3</div>
+          <img class="figure-img" src="static/images/bu_action_only.png" alt="ButtonUnmask: the current frame shows three identical containers">
+          <figcaption>(b) Current observation: cue hidden</figcaption>
+          <div class="ex-body">
+            <b>Selected: center container <span class="bad">(failure)</span></b><br>
+            <code>choice=b, point=[102,135]</code><br>
+            <q>The button has already been pressed; I will lift the center container, though the reveal frames are unavailable to verify its color.</q>
+          </div>
         </figure>
       </div>
-      <p class="caption has-text-centered"><code>ButtonUnmask</code>: “first press the button, then pick up the container hiding the red cube”.
-        With only the action log, the agent sees the covered scene and picks the center container. With visual history, earlier frames still show
-        the red cube on the left, and it picks correctly.</p>
+      <p class="caption has-text-centered">GPT-6 Astra on <code>ButtonUnmask</code>, test episode 0. With visual history, the agent locates the red cube
+        from an earlier frame. Without it, the agent presses twice more and then chooses the center container. Commands and rationales are copied
+        from the logs; <code>b</code> means lift a container.</p>
       <div class="prose" style="margin-top:1rem">
         <p>
           Same model, same code; only the memory changes. Adding visual history changes the outcome of 23 episodes for GPT-6 Astra, all of
-          them in its favor (p = 2.4×10<sup>−7</sup>; Opus: 32 of 38, p = 2.4×10<sup>−5</sup>). Most gains (20 of 23 for GPT-6 Astra) come from
+          them in its favor (p = 2.4×10<sup>−7</sup>; Opus: 32 of 38, p = 2.4×10<sup>−5</sup>). Most gains (20 of 23 for GPT-6 Astra, 24 of 32 for Opus) come from
           <code>ButtonUnmask</code>, <code>ButtonUnmaskSwap</code> and <code>PickHighlight</code>, where the key cue is visible only briefly and is gone
           when the agent must act.
         </p>
@@ -434,28 +459,28 @@
   <!-- ================= Implications ================= -->
   <section class="section hero is-light" id="implications">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">What Benchmarks Need Next</h2>
+      <h2 class="title is-3 has-text-centered">What These Scores Do and Don't Show</h2>
       <div class="prose">
         <p>
-          In both benchmarks, an episode takes only a few high-level decisions (fewer than four on RoboMME, about nine on RMBench), and the relevant
-          evidence can simply be kept in the prompt. RoboMME remains a useful diagnostic for <em>agent-level</em> memory pipelines, but its success
-          rate alone cannot be read as a measure of the native memory of the underlying model. We therefore argue that future robot memory
-          benchmarks should include:
+          The scores measure the planner and the memory it is given together; they do not isolate the underlying model's memory capability.
+          Episodes are short (3.7–3.9 high-level decisions on RoboMME and about nine on RMBench), so the full text log and, when enabled, a
+          contact sheet of past observations fit in every request. These results therefore do not test how systems select, compress and
+          retrieve memory when the history exceeds the model's context. Questions that longer benchmarks could answer:
         </p>
       </div>
       <ol class="takeaways">
-        <li><b>Much longer horizons</b>, so the full history no longer fits in context and the agent must decide what to store.</li>
-        <li><b>Demonstrations withheld after they are first shown</b>, so they must be remembered rather than re-read.</li>
-        <li><b>Cues that neither the current frame nor an action log can recover</b>, the only regime in which our ablations separate memory representations.</li>
+        <li><b>What does an agent choose to retain</b> when the full history no longer fits in the prompt?</li>
+        <li><b>Which memory representation works best</b> under such a budget: text logs, agent-written records, images, task state or world-state graphs?</li>
+        <li><b>Which errors come from memory</b>, and which from planning or execution, if memory decisions are scored separately from task success?</li>
       </ol>
       <details class="more">
         <summary>Limitations</summary>
         <ul class="limits">
-          <li>Each RoboMME cell is run once per model on 160 of 800 test episodes; the McNemar test ignores that gains cluster within tasks.</li>
-          <li>Skills are executed by agent-built code (or RoboMME's oracle planner), so results concern the benchmarks' memory component, not end-to-end policies.</li>
-          <li>RMBench's visual history holds only decision-time frames and cannot capture cues that appear during execution; the 91 vs. 93 result applies only to that form of visual memory.</li>
-          <li>Some RMBench task notes tell the planner what to record, which favors the action log. RMBench seeds 0–9 were also used while debugging the harness; a rerun on unseen seeds is planned.</li>
-          <li>We use a single planner on RMBench; a weaker open model and a full-context baseline under our harness are left for future work.</li>
+          <li>Each model–condition pair is run once on 160 of RoboMME's 800 test episodes; the McNemar test does not account for gains clustering within tasks.</li>
+          <li>RoboMME's task notes were written after inspecting failures on test episodes, and the agent-built skills were debugged partly on test scenes. This affects the absolute success rates, not the paired memory comparison; the similar oracle-planner scores suggest that skill tuning alone does not explain them.</li>
+          <li>RMBench's visual history holds only decision-time frames and misses cues visible only during execution; agent-written records and the task notes guiding them are not ablated separately.</li>
+          <li>On two RMBench counting tasks, the image condition had no call cap, although neither memory-equipped condition reached the caps. RMBench seeds 0–9 were used while debugging the harness, so the scores may overestimate performance on unseen episodes.</li>
+          <li>Compact task-state memory, world-state graphs, full conversational context and open-weight planners are left for future comparisons.</li>
         </ul>
       </details>
     </div>

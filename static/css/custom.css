@@ -448,3 +448,10 @@ img, video, svg { max-width: 100%; height: auto; }
 /* Author list: break into 4 + 4 on wide screens, wrap naturally on phones */
 .desk-br { display: none; }
 @media (min-width: 769px) { .desk-br { display: inline; } }
+
+/* ButtonUnmask example: header and logged decision under each frame */
+.ex-head { font-weight: 700; color: var(--ink); text-align: center; margin-bottom: 0.4rem; font-size: 0.95rem; }
+.ex-body { font-size: 0.88rem; line-height: 1.55; color: #334155; margin-top: 0.5rem; }
+.ex-body q { display: block; margin-top: 0.3rem; font-style: italic; }
+.ex-body .ok { color: #1f7a33; }
+.ex-body .bad { color: #b42318; }
