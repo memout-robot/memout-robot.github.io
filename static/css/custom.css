@@ -444,3 +444,7 @@ img, video, svg { max-width: 100%; height: auto; }
 .defbox-title { font-weight: 800; color: var(--ink); margin-bottom: 0.35rem; }
 .defbox ul { margin: 0.5rem 0 0 1.1rem; }
 .defbox li { list-style: disc; margin-bottom: 0.35rem; }
+
+/* Author list: break into 4 + 4 on wide screens, wrap naturally on phones */
+.desk-br { display: none; }
+@media (min-width: 769px) { .desk-br { display: inline; } }

@@ -8,14 +8,14 @@
   <meta name="title" content="How Hard Are Current Robot Memory Benchmarks for Agentic Harnesses?">
   <meta name="description" content="A simple, training-free agentic harness nearly saturates RoboMME, its score depends on what the harness remembers, and RMBench's memory demand is largely met by an action log. Robot memory benchmarks need longer horizons.">
   <meta name="keywords" content="robot memory, benchmark, agentic robots, RoboMME, RMBench, multimodal LLM, GPT-6 Astra, Claude Opus 5.5, manipulation">
-  <meta name="author" content="Feiyang Wu, Weirui Ye, Haonan Chen, Haoyu Chen, Yandong Ji, Yuejiang Liu, Yilun Du">
+  <meta name="author" content="Feiyang Wu, Weirui Ye, Haonan Chen, Haoyu Chen, Jiayu Zhou, Yandong Ji, Yuejiang Liu, Yilun Du">
   <meta name="robots" content="index, follow">
   <meta name="language" content="English">
 
   <!-- Open Graph -->
   <meta property="og:type" content="article">
   <meta property="og:title" content="How Hard Are Current Robot Memory Benchmarks for Agentic Harnesses?">
-  <meta property="og:description" content="A simple, training-free agent nearly saturates RoboMME (95.0% vs. 90.5% human); what the harness remembers moves the score by 12–14 points. Robot memory benchmarks need longer horizons.">
+  <meta property="og:description" content="A simple, training-free agent nearly saturates RoboMME (95.6% vs. 90.5% human); what the harness remembers moves the score by 14–16 points. Robot memory benchmarks need longer horizons.">
   <!-- TODO: set og:url / og:image once the page is deployed -->
   <meta property="og:image" content="static/images/harness.png">
 
@@ -31,6 +31,7 @@
   <meta name="citation_author" content="Ye, Weirui">
   <meta name="citation_author" content="Chen, Haonan">
   <meta name="citation_author" content="Chen, Haoyu">
+  <meta name="citation_author" content="Zhou, Jiayu">
   <meta name="citation_author" content="Ji, Yandong">
   <meta name="citation_author" content="Liu, Yuejiang">
   <meta name="citation_author" content="Du, Yilun">
@@ -50,7 +51,7 @@
 
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/index.css?v=20261015">
-  <link rel="stylesheet" href="static/css/custom.css?v=20261015">
+  <link rel="stylesheet" href="static/css/custom.css?v=20261020">
   <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
@@ -85,14 +86,17 @@
               <span class="author-block">Weirui Ye<sup>2</sup>,</span>
               <span class="author-block">Haonan Chen<sup>1</sup>,</span>
               <span class="author-block">Haoyu Chen<sup>1</sup>,</span>
+              <br class="desk-br">
+              <span class="author-block">Jiayu Zhou<sup>3</sup>,</span>
               <span class="author-block">Yandong Ji<sup>1</sup>,</span>
-              <span class="author-block">Yuejiang Liu<sup>3</sup>,</span>
+              <span class="author-block">Yuejiang Liu<sup>4</sup>,</span>
               <span class="author-block">Yilun Du<sup>1</sup></span>
             </div>
             <div class="is-size-6 publication-authors">
               <span class="author-block"><sup>1</sup>Harvard University</span>&nbsp;&nbsp;
               <span class="author-block"><sup>2</sup>Massachusetts Institute of Technology</span>&nbsp;&nbsp;
-              <span class="author-block"><sup>3</sup>Stanford University</span>
+              <span class="author-block"><sup>3</sup>Columbia University</span>&nbsp;&nbsp;
+              <span class="author-block"><sup>4</sup>Stanford University</span>
             </div>
 
             <div class="column has-text-centered">
@@ -128,11 +132,11 @@
       <div class="hero-body">
         <div class="stat-row">
           <div class="stat">
-            <div class="num accent">95.0%</div>
+            <div class="num accent">95.6%</div>
             <div class="lbl">RoboMME success of a simple, training-free agent (humans: 90.5%)</div>
           </div>
           <div class="stat">
-            <div class="num accent">+13.8</div>
+            <div class="num accent">+14.4</div>
             <div class="lbl">points on RoboMME from adding visual history to the action log</div>
           </div>
           <div class="stat">
@@ -148,7 +152,7 @@
         <div class="tldr">
           <strong>TL;DR.</strong> Are robot memory benchmarks still hard once memory can live outside the policy? We wrap a frontier
           multimodal LLM in a deliberately simple harness that <strong>bypasses the model's native memory</strong> (every decision is a
-          separate, stateless API call) and <strong>lets it call only high-level skills</strong>. It nearly saturates RoboMME, its score
+          separate, stateless API call) and <strong>lets it call only high-level skills</strong>, executed by code that a coding agent wrote. It nearly saturates RoboMME, its score
           depends on what the harness shows it, and RMBench is solved by an action log. Robot memory benchmarks need
           <strong>much longer horizons</strong>.
         </div>
@@ -167,8 +171,10 @@
               general-purpose multimodal model controls the robot through high-level skills. We wrap GPT-6 Astra and Claude Opus 5.5 in a
               simple, training-free harness with two deliberate restrictions: every decision is a separate, stateless API call, so the model
               sees the past only through what the harness puts in the prompt; and the model only selects skills, so manipulation dynamics do
-              not confound the results. On RoboMME, GPT-6 Astra succeeds in 81.3% of episodes with a text log of its past actions, and in
-              95.0% when it also sees images of its own past execution (Claude Opus 5.5: 76.9% and 88.8%), compared with 90.5% for humans.
+              not confound the results. The skills are executed by code that a coding agent wrote and froze before evaluation. On RoboMME,
+              GPT-6 Astra succeeds in 81.3% of episodes with a text log of its past actions, and in 95.6% when it also sees images of its own
+              past execution (Claude Opus 5.5: 72.5% and 88.8%), compared with 90.5% for humans; RoboMME's oracle planner gives nearly the
+              same results.
               The gain comes mainly from three tasks whose key visual cue disappears before it is needed. On RMBench, the action log alone
               matches the log plus visual history (91% vs. 93%). Both benchmarks need only a few decisions per episode, so we argue that
               robot memory benchmarks need much longer horizons.
@@ -191,9 +197,10 @@
         </p>
         <p>
           <b>We let the model call only high-level skills.</b> When the goal is to test memory, the agent should not be bottlenecked by the dynamics
-          of manipulation. On RoboMME, it chooses among the benchmark's own skills, which RoboMME's planner executes. RMBench offers no skills, so the
-          model names a skill and a pixel, and a fixed, training-free harness grounds the pixel and plans the motion. Failures then point to what the
-          agent remembered, not to how well the arm moved.
+          of manipulation. On RoboMME, it chooses among the benchmark's own high-level skills, which are executed by <em>agent-built skills</em>:
+          code that a coding agent wrote, tested in simulation and froze before evaluation. RMBench offers no skills, so the model names a skill
+          and a pixel, and agent-built skills ground the pixel and plan the motion. Failures then point to what the agent remembered, not to how
+          well the arm moved.
         </p>
         <p>
           The harness is otherwise kept minimal: no training, no retrieval, and no task-specific strategy beyond short notes on benchmark
@@ -218,35 +225,31 @@
           <thead><tr><th></th><th>Full-context agent (e.g., <a href="https://embodied-astra.github.io/" target="_blank">Embodied-Astra</a>)</th><th>Ours</th></tr></thead>
           <tbody>
             <tr><td>Memory</td><td>Native: one chained conversation per episode</td><td><b>No native memory.</b> Each decision is a separate, stateless API call; the past enters only through what the harness puts in the prompt (no memory / action log / action log + visual history)</td></tr>
-            <tr><td>Control</td><td>Model outputs end-effector waypoints</td><td><b>Skills only.</b> The model picks a skill (+ pixel); RoboMME's oracle planner or a fixed SAM2 + CuRobo harness executes it</td></tr>
+            <tr><td>Control</td><td>Model outputs end-effector waypoints</td><td><b>Skills only.</b> The model picks a skill (+ pixel); agent-built skills, written by a coding agent and frozen before evaluation, execute it</td></tr>
             <tr><td>Question</td><td>How well can a frontier model do?</td><td>What does the benchmark actually measure?</td></tr>
           </tbody>
         </table>
       </div>
       <p class="caption">Memory becomes a variable we can ablate, and failures point to memory rather than manipulation. The protocols differ, so we do not claim to outperform full-context agents.</p>
 
-      <img class="figure-img" style="margin-top:1.5rem" src="static/images/harness.png" alt="Diagram of one decision of the memory harness on RoboMME">
+      <img class="figure-img" style="margin-top:1.5rem" src="static/images/harness.png?v=20261020" alt="Diagram of one decision of the memory harness on RoboMME">
       <p class="caption">One decision on RoboMME. The harness builds a prompt from the goal, skills, action log and current image (plus, in the
-        action log + visual history setting, a 24-frame grid of past execution); the model answers in one stateless call; RoboMME's planner executes the skill.</p>
+        action log + visual history setting, a 24-frame grid of past execution); the model answers in one stateless call; agent-built skills execute it.</p>
     </div>
   </section>
 
   <!-- ================= Finding 1 ================= -->
   <section class="section" id="robomme">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Finding 1: RoboMME Is Nearly Solved (95% vs. 90.5% for Humans)</h2>
+      <h2 class="title is-3 has-text-centered">Finding 1: RoboMME Is Nearly Solved (95.6% vs. 90.5% for Humans)</h2>
       <div class="bars" role="img" aria-label="Average RoboMME success rate by method">
         <div class="bar-group-label">Learned execution (800 test episodes)</div>
         <div class="bar-row">
           <div class="bar-name">Best memory VLA<small>FrameSamp+Modul, π<sub>0.5</sub></small></div>
           <div class="bar-track"><div class="bar-fill" style="width:44.5%"><span>44.5</span></div><div class="human-line" style="left:90.5%"></div></div>
         </div>
-        <div class="bar-row">
-          <div class="bar-name">GPT-6 Astra + π<sub>0.5</sub><small>three-tier system</small></div>
-          <div class="bar-track"><div class="bar-fill" style="width:79.1%"><span>79.1</span></div><div class="human-line" style="left:90.5%"></div></div>
-        </div>
 
-        <div class="bar-group-label">Oracle planner (RoboMME)</div>
+        <div class="bar-group-label">RoboMME's oracle planner</div>
         <div class="bar-row">
           <div class="bar-name">Gemini-2.5-Pro</div>
           <div class="bar-track"><div class="bar-fill" style="width:47.9%"><span>47.9</span></div><div class="human-line" style="left:90.5%"></div></div>
@@ -256,10 +259,10 @@
           <div class="bar-track"><div class="bar-fill human" style="width:90.5%"><span>90.5</span></div></div>
         </div>
 
-        <div class="bar-group-label">Ours: oracle planner + memory harness (160 test episodes)</div>
+        <div class="bar-group-label">Ours: agent-built skills + memory harness (160 test episodes)</div>
         <div class="bar-row">
           <div class="bar-name">Claude Opus 5.5<small>action log</small></div>
-          <div class="bar-track"><div class="bar-fill log" style="width:76.9%"><span>76.9</span></div><div class="human-line" style="left:90.5%"></div></div>
+          <div class="bar-track"><div class="bar-fill log" style="width:72.5%"><span>72.5</span></div><div class="human-line" style="left:90.5%"></div></div>
         </div>
         <div class="bar-row">
           <div class="bar-name">Claude Opus 5.5<small>+ visual history</small></div>
@@ -271,23 +274,49 @@
         </div>
         <div class="bar-row">
           <div class="bar-name">GPT-6 Astra<small>+ visual history</small></div>
-          <div class="bar-track"><div class="bar-fill vis" style="width:95.0%"><span>95.0</span></div><div class="human-line" style="left:90.5%"></div></div>
+          <div class="bar-track"><div class="bar-fill vis" style="width:95.6%"><span>95.6</span></div><div class="human-line" style="left:90.5%"></div></div>
         </div>
       </div>
       <div class="legend">
-        <span><i class="sw-base"></i>baselines from RoboMME and the three-tier report</span>
+        <span><i class="sw-base"></i>baselines from RoboMME</span>
         <span><i class="sw-log"></i>action log</span>
         <span><i class="sw-vis"></i>action log + visual history</span>
         <span><i class="sw-human"></i>human (dashed line)</span>
       </div>
-      <p class="caption has-text-centered">Average success (%). Ours: 160 of the 800 test episodes, with privileged execution, so comparisons are indicative.</p>
+      <p class="caption has-text-centered">Average success (%). Ours: 160 of the 800 test episodes, so comparisons are indicative.</p>
       <div class="prose" style="margin-top:1.25rem">
         <p>
-          GPT-6 Astra reaches 95.0% with the action log plus visual history (Claude Opus 5.5: 88.8%), above the 90.5% human score and far
-          above RoboMME's best foundation-model planner (Gemini-2.5-Pro, 47.9%) and best memory VLA (44.5%). Most remaining failures are about
-          timing and control, not memory, e.g. <code>StopCube</code>, which requires pressing a button at the right moment.
+          GPT-6 Astra reaches 95.6% with the action log plus visual history (Claude Opus 5.5: 88.8%) and solves every episode on 15 of the
+          16 tasks. That is above the 90.5% human score and far above RoboMME's best foundation-model planner (Gemini-2.5-Pro, 47.9%) and
+          best memory VLA (44.5%). Executing the same skills with RoboMME's oracle planner instead gives nearly the same results (95.0% and
+          88.8%). All of GPT-6 Astra's remaining failures are in <code>StopCube</code> (30%), which requires pressing a button at the right moment; with the oracle planner, which stops at the exact event time, it reaches 60%.
         </p>
       </div>
+
+      <details class="more">
+        <summary>Per-task results with RoboMME's oracle planner</summary>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr><th></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th><th class="sep"></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th></tr>
+            <tr><th>Task</th><th>N</th><th>H</th><th>N</th><th>H</th><th class="sep">Task</th><th>N</th><th>H</th><th>N</th><th>H</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>VideoUnmask<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td class="sep">SwingXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td></tr>
+            <tr><td>VideoUnmaskSwap<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>90</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmask</td><td style="background:var(--accent-soft)">30</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">50</td><td class="up" style="background:var(--accent-soft)">100</td></tr>
+            <tr><td>VideoRepick<sup>d</sup></td><td>100</td><td>100</td><td>80</td><td>80</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmaskSwap</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td></tr>
+            <tr><td>VideoPlaceButton<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td class="sep" style="background:var(--accent-soft)">PickHighlight</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">40</td><td class="up" style="background:var(--accent-soft)">100</td></tr>
+            <tr><td>VideoPlaceOrder<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td class="sep">InsertPeg<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td></tr>
+            <tr><td>BinFill</td><td>80</td><td>80</td><td>90</td><td>90</td><td class="sep">RouteStick<sup>d</sup></td><td>100</td><td>80</td><td>60</td><td>50</td></tr>
+            <tr><td>PickXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td><td class="sep">PatternLock<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>90</td></tr>
+            <tr><td>MoveCube<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td class="sep">StopCube</td><td>50</td><td>60</td><td>20</td><td>50</td></tr>
+          </tbody>
+        </table>
+      </div>
+        <p class="caption">Same models, prompts and task notes, with RoboMME's oracle planner executing the skills. N: action log;
+          H: action log + visual history; 10 episodes per task. <sup>d</sup>: demonstration provided. Average: GPT-6 Astra 81.3 → 95.0,
+          Opus 76.9 → 88.8.</p>
+      </details>
     </div>
   </section>
 
@@ -297,7 +326,7 @@
       <h2 class="title is-3 has-text-centered">Finding 2: On RMBench, the Action Log Alone Is Enough</h2>
       <div class="prose">
         <p>
-          RMBench has no skill library, so the model names a skill and a target pixel, and our fixed harness executes it. We compare the
+          RMBench has no skill library, so the model names a skill and a target pixel, and agent-built skills execute it. We compare the
           three memory settings with GPT-6 Astra on 10 tasks × 10 seeds.
         </p>
       </div>
@@ -325,8 +354,8 @@
 
       <details class="more">
         <summary>RMBench harness and per-task results</summary>
-        <img class="figure-img" src="static/images/harness_rmbench.png" alt="Diagram of one decision of the harness on RMBench" loading="lazy">
-        <p class="caption">RMBench has no skill library: the model outputs a skill and a pixel, and a fixed harness grounds it with SAM2 + depth and plans with CuRobo, without simulator state.</p>
+        <img class="figure-img" src="static/images/harness_rmbench.png?v=20261020" alt="Diagram of one decision of the harness on RMBench" loading="lazy">
+        <p class="caption">RMBench has no skill library: the model outputs a skill and a pixel, and agent-built skills ground it with SAM2 + depth and plan with CuRobo, without simulator state.</p>
       <div class="table-wrap">
         <table class="tbl">
           <thead><tr><th>Task</th><th>No memory</th><th>Action log</th><th>Action log + visual history</th></tr></thead>
@@ -353,7 +382,7 @@
   <!-- ================= Finding 3 ================= -->
   <section class="section" id="memory-matters">
     <div class="container is-max-desktop">
-      <h2 class="title is-3 has-text-centered">Finding 3: On RoboMME, Adding Visual History Is Worth 12–14 Points</h2>
+      <h2 class="title is-3 has-text-centered">Finding 3: On RoboMME, Adding Visual History Is Worth 14–16 Points</h2>
       <div class="example-grid">
         <figure>
           <img class="figure-img" src="static/images/bu_step0.png" alt="ButtonUnmask decision 0: three cubes visible">
@@ -369,33 +398,35 @@
         the red cube on the left, and it picks correctly.</p>
       <div class="prose" style="margin-top:1rem">
         <p>
-          Same model, same code; only the memory changes. Adding visual history wins 25 of the 28 episodes whose outcome changes for
-          GPT-6 Astra (p = 2.7×10<sup>−5</sup>; Opus: 23 of 27). Almost all gains come from <code>ButtonUnmask</code>, <code>ButtonUnmaskSwap</code>
-          and <code>PickHighlight</code>, where the key cue is visible only briefly and is gone when the agent must act.
+          Same model, same code; only the memory changes. Adding visual history changes the outcome of 23 episodes for GPT-6 Astra, all of
+          them in its favor (p = 2.4×10<sup>−7</sup>; Opus: 32 of 38, p = 2.4×10<sup>−5</sup>). Most gains (20 of 23 for GPT-6 Astra) come from
+          <code>ButtonUnmask</code>, <code>ButtonUnmaskSwap</code> and <code>PickHighlight</code>, where the key cue is visible only briefly and is gone
+          when the agent must act.
         </p>
       </div>
 
       <details class="more">
-        <summary>Per-task results</summary>
+        <summary>Per-task results (agent-built skills)</summary>
       <div class="table-wrap">
         <table class="tbl">
           <thead>
-            <tr><th></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th><th></th><th class="sep"></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th><th></th></tr>
-            <tr><th>Task</th><th>N</th><th>H</th><th>N</th><th>H</th><th>3T</th><th class="sep">Task</th><th>N</th><th>H</th><th>N</th><th>H</th><th>3T</th></tr>
+            <tr><th></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th><th class="sep"></th><th colspan="2">GPT-6 Astra</th><th colspan="2">Opus 5.5</th></tr>
+            <tr><th>Task</th><th>N</th><th>H</th><th>N</th><th>H</th><th class="sep">Task</th><th>N</th><th>H</th><th>N</th><th>H</th></tr>
           </thead>
           <tbody>
-            <tr><td>VideoUnmask<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td>92</td><td class="sep">SwingXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td><td>82</td></tr>
-            <tr><td>VideoUnmaskSwap<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>90</td><td>100</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmask</td><td style="background:var(--accent-soft)">30</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">50</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">100</td></tr>
-            <tr><td>VideoRepick<sup>d</sup></td><td>100</td><td>100</td><td>80</td><td>80</td><td>86</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmaskSwap</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">84</td></tr>
-            <tr><td>VideoPlaceButton<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>100</td><td class="sep" style="background:var(--accent-soft)">PickHighlight</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">40</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">84</td></tr>
-            <tr><td>VideoPlaceOrder<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td>98</td><td class="sep">InsertPeg<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>18</td></tr>
-            <tr><td>BinFill</td><td>80</td><td>80</td><td>90</td><td>90</td><td>82</td><td class="sep">RouteStick<sup>d</sup></td><td>100</td><td>80</td><td>60</td><td>50</td><td>58</td></tr>
-            <tr><td>PickXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td><td>96</td><td class="sep">PatternLock<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>90</td><td>88</td></tr>
-            <tr><td>MoveCube<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td>80</td><td class="sep">StopCube</td><td>50</td><td>60</td><td>20</td><td>50</td><td>18</td></tr>
+            <tr><td>VideoUnmask<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td class="sep">SwingXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td></tr>
+            <tr><td>VideoUnmaskSwap<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>100</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmask</td><td style="background:var(--accent-soft)">40</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">40</td><td class="up" style="background:var(--accent-soft)">100</td></tr>
+            <tr><td>VideoRepick<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td><td class="sep" style="background:var(--accent-soft)">ButtonUnmaskSwap</td><td style="background:var(--accent-soft)">40</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">0</td><td class="up" style="background:var(--accent-soft)">100</td></tr>
+            <tr><td>VideoPlaceButton<sup>d</sup></td><td>100</td><td>100</td><td>80</td><td>90</td><td class="sep" style="background:var(--accent-soft)">PickHighlight</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td><td style="background:var(--accent-soft)">20</td><td class="up" style="background:var(--accent-soft)">100</td></tr>
+            <tr><td>VideoPlaceOrder<sup>d</sup></td><td>100</td><td>100</td><td>100</td><td>100</td><td class="sep">InsertPeg<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td></tr>
+            <tr><td>BinFill</td><td>100</td><td>100</td><td>100</td><td>80</td><td class="sep">RouteStick<sup>d</sup></td><td>100</td><td>100</td><td>60</td><td>60</td></tr>
+            <tr><td>PickXtimes</td><td>100</td><td>100</td><td>100</td><td>100</td><td class="sep">PatternLock<sup>d</sup></td><td>100</td><td>100</td><td>90</td><td>90</td></tr>
+            <tr><td>MoveCube<sup>d</sup></td><td>90</td><td>100</td><td>100</td><td>90</td><td class="sep">StopCube</td><td>10</td><td>30</td><td>0</td><td>30</td></tr>
           </tbody>
         </table>
       </div>
-        <p class="caption">N: action log; H: action log + visual history; 10 episodes per task. <sup>d</sup>: demonstration provided. 3T: GPT-6 Astra + π<sub>0.5</sub> three-tier system.</p>
+        <p class="caption">N: action log; H: action log + visual history; 10 episodes per task. <sup>d</sup>: demonstration provided.
+          Highlighted: the three tasks whose cue is visible only briefly.</p>
       </details>
     </div>
   </section>
@@ -421,7 +452,7 @@
         <summary>Limitations</summary>
         <ul class="limits">
           <li>Each RoboMME cell is run once per model on 160 of 800 test episodes; the McNemar test ignores that gains cluster within tasks.</li>
-          <li>RoboMME's oracle planner gives privileged execution; results concern the benchmark's memory component, not end-to-end policies.</li>
+          <li>Skills are executed by agent-built code (or RoboMME's oracle planner), so results concern the benchmarks' memory component, not end-to-end policies.</li>
           <li>RMBench's visual history holds only decision-time frames and cannot capture cues that appear during execution; the 91 vs. 93 result applies only to that form of visual memory.</li>
           <li>Some RMBench task notes tell the planner what to record, which favors the action log. RMBench seeds 0–9 were also used while debugging the harness; a rerun on unseen seeds is planned.</li>
           <li>We use a single planner on RMBench; a weaker open model and a full-context baseline under our harness are left for future work.</li>
@@ -443,7 +474,7 @@
       <!-- TODO: update with the arXiv ID once available -->
 <pre id="bibtex-code"><code>@article{wu2026memory,
   title   = {How Hard Are Current Robot Memory Benchmarks for Agentic Harnesses?},
-  author  = {Wu, Feiyang and Ye, Weirui and Chen, Haonan and Chen, Haoyu and Ji, Yandong and Liu, Yuejiang and Du, Yilun},
+  author  = {Wu, Feiyang and Ye, Weirui and Chen, Haonan and Chen, Haoyu and Zhou, Jiayu and Ji, Yandong and Liu, Yuejiang and Du, Yilun},
   journal = {arXiv preprint},
   year    = {2026}
 }</code></pre>
